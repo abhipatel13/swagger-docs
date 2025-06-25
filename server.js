@@ -7,13 +7,51 @@ const path = require('path');
 
 const app = express();
 
-// Load YAML documents
-const squarespaceDocument = YAML.load('./squarespace-api.yaml');
-const integrationTestingDocument = YAML.load('./integration-testing-api.yaml');
-const mockDataGenerationDocument = YAML.load('./mock-data-generation-api.yaml');
-const performanceTestingDocument = YAML.load('./performance-testing-api.yaml');
-const regressionTestingDocument = YAML.load('./regression-testing-api.yaml');
-const postmanEchoDocument = YAML.load('./postman-echo-api.yaml');
+// Load YAML documents with error handling and logging
+let squarespaceDocument, integrationTestingDocument, mockDataGenerationDocument, 
+    performanceTestingDocument, regressionTestingDocument, postmanEchoDocument;
+
+try {
+  squarespaceDocument = YAML.load(path.join(__dirname, 'squarespace-api.yaml'));
+  console.log('✅ Loaded Squarespace API:', squarespaceDocument.info.title);
+} catch (error) {
+  console.error('❌ Error loading squarespace-api.yaml:', error.message);
+}
+
+try {
+  integrationTestingDocument = YAML.load(path.join(__dirname, 'integration-testing-api.yaml'));
+  console.log('✅ Loaded Integration Testing API:', integrationTestingDocument.info.title);
+} catch (error) {
+  console.error('❌ Error loading integration-testing-api.yaml:', error.message);
+}
+
+try {
+  mockDataGenerationDocument = YAML.load(path.join(__dirname, 'mock-data-generation-api.yaml'));
+  console.log('✅ Loaded Mock Data Generation API:', mockDataGenerationDocument.info.title);
+} catch (error) {
+  console.error('❌ Error loading mock-data-generation-api.yaml:', error.message);
+}
+
+try {
+  performanceTestingDocument = YAML.load(path.join(__dirname, 'performance-testing-api.yaml'));
+  console.log('✅ Loaded Performance Testing API:', performanceTestingDocument.info.title);
+} catch (error) {
+  console.error('❌ Error loading performance-testing-api.yaml:', error.message);
+}
+
+try {
+  regressionTestingDocument = YAML.load(path.join(__dirname, 'regression-testing-api.yaml'));
+  console.log('✅ Loaded Regression Testing API:', regressionTestingDocument.info.title);
+} catch (error) {
+  console.error('❌ Error loading regression-testing-api.yaml:', error.message);
+}
+
+try {
+  postmanEchoDocument = YAML.load(path.join(__dirname, 'postman-echo-api.yaml'));
+  console.log('✅ Loaded Postman Echo API:', postmanEchoDocument.info.title);
+} catch (error) {
+  console.error('❌ Error loading postman-echo-api.yaml:', error.message);
+}
 
 // Enable CORS for all requests
 app.use(cors());
@@ -70,29 +108,76 @@ app.use('/api/regression-testing', createProxyMiddleware({
 }));
 
 // Serve Swagger documentation for each API
-
-app.get('/squarespace-api', (req, res) => {
-  res.send(swaggerUi.generateHTML(squarespaceDocument));
+app.use('/squarespace-api', swaggerUi.serve, (req, res, next) => {
+  if (!squarespaceDocument) {
+    return res.status(500).send('Squarespace API documentation not loaded');
+  }
+  console.log('🔍 Serving Squarespace API:', squarespaceDocument.info.title);
+  swaggerUi.setup(squarespaceDocument, {
+    customSiteTitle: "Squarespace API Documentation",
+    customCss: '.swagger-ui .topbar { display: none }',
+    customJs: '/js/custom.js'
+  })(req, res, next);
 });
 
-app.get('/integration-testing-api', (req, res) => {
-  res.send(swaggerUi.generateHTML(integrationTestingDocument));
+app.use('/integration-testing-api', swaggerUi.serve, (req, res, next) => {
+  if (!integrationTestingDocument) {
+    return res.status(500).send('Integration Testing API documentation not loaded');
+  }
+  console.log('🔍 Serving Integration Testing API:', integrationTestingDocument.info.title);
+  swaggerUi.setup(integrationTestingDocument, {
+    customSiteTitle: "Integration Testing API Documentation",
+    customCss: '.swagger-ui .topbar { display: none }',
+    customJs: '/js/custom.js'
+  })(req, res, next);
 });
 
-app.get('/mock-data-generation-api', (req, res) => {
-  res.send(swaggerUi.generateHTML(mockDataGenerationDocument));
+app.use('/mock-data-generation-api', swaggerUi.serve, (req, res, next) => {
+  if (!mockDataGenerationDocument) {
+    return res.status(500).send('Mock Data Generation API documentation not loaded');
+  }
+  console.log('🔍 Serving Mock Data Generation API:', mockDataGenerationDocument.info.title);
+  swaggerUi.setup(mockDataGenerationDocument, {
+    customSiteTitle: "Mock Data Generation API Documentation",
+    customCss: '.swagger-ui .topbar { display: none }',
+    customJs: '/js/custom.js'
+  })(req, res, next);
 });
 
-app.get('/performance-testing-api', (req, res) => {
-  res.send(swaggerUi.generateHTML(performanceTestingDocument));
+app.use('/performance-testing-api', swaggerUi.serve, (req, res, next) => {
+  if (!performanceTestingDocument) {
+    return res.status(500).send('Performance Testing API documentation not loaded');
+  }
+  console.log('🔍 Serving Performance Testing API:', performanceTestingDocument.info.title);
+  swaggerUi.setup(performanceTestingDocument, {
+    customSiteTitle: "Performance Testing API Documentation",
+    customCss: '.swagger-ui .topbar { display: none }',
+    customJs: '/js/custom.js'
+  })(req, res, next);
 });
 
-app.get('/regression-testing-api', (req, res) => {
-  res.send(swaggerUi.generateHTML(regressionTestingDocument));
+app.use('/regression-testing-api', swaggerUi.serve, (req, res, next) => {
+  if (!regressionTestingDocument) {
+    return res.status(500).send('Regression Testing API documentation not loaded');
+  }
+  console.log('🔍 Serving Regression Testing API:', regressionTestingDocument.info.title);
+  swaggerUi.setup(regressionTestingDocument, {
+    customSiteTitle: "Regression Testing API Documentation",
+    customCss: '.swagger-ui .topbar { display: none }',
+    customJs: '/js/custom.js'
+  })(req, res, next);
 });
 
-app.get('/postman-echo-api', (req, res) => {
-  res.send(swaggerUi.generateHTML(postmanEchoDocument));
+app.use('/postman-echo-api', swaggerUi.serve, (req, res, next) => {
+  if (!postmanEchoDocument) {
+    return res.status(500).send('Postman Echo API documentation not loaded');
+  }
+  console.log('🔍 Serving Postman Echo API:', postmanEchoDocument.info.title);
+  swaggerUi.setup(postmanEchoDocument, {
+    customSiteTitle: "Postman Echo API Documentation",
+    customCss: '.swagger-ui .topbar { display: none }',
+    customJs: '/js/custom.js'
+  })(req, res, next);
 });
 
 // Health check endpoint for Render
