@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: API documentation for mock data generation endpoints
 servers:
-  - url: http://localhost:3000/api/mock-data-generation
+  - url: https://swagger-docs-2t0v.onrender.com/api/mock-data-generation
     description: Mock Data Generation Server
 components:
   schemas:

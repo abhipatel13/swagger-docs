@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: API documentation for integration testing endpoints
 servers:
-  - url: http://localhost:3000/api/integration-testing
+  - url: https://swagger-docs-2t0v.onrender.com/api/integration-testing
     description: Integration Testing Server
 tags:
   - name: Integration Testing API
