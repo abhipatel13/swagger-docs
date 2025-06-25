@@ -26,6 +26,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+
 // Proxy for Squarespace API
 app.use('/api/squarespace', createProxyMiddleware({
   target: 'https://api.squarespace.com',
@@ -69,41 +70,30 @@ app.use('/api/regression-testing', createProxyMiddleware({
 }));
 
 // Serve Swagger documentation for each API
-app.use('/squarespace-api', swaggerUi.serve, swaggerUi.setup(squarespaceDocument, {
-  customSiteTitle: "Squarespace API Documentation",
-  customCss: '.swagger-ui .topbar { display: none }',
-  customJs: '/js/custom.js'
-}));
 
-app.use('/integration-testing-api', swaggerUi.serve, swaggerUi.setup(integrationTestingDocument, {
-  customSiteTitle: "Integration Testing API Documentation",
-  customCss: '.swagger-ui .topbar { display: none }',
-  customJs: '/js/custom.js'
-}));
+app.get('/squarespace-api', (req, res) => {
+  res.send(swaggerUi.generateHTML(squarespaceDocument));
+});
 
-app.use('/postman-echo-api', swaggerUi.serve, swaggerUi.setup(postmanEchoDocument, {
-  customSiteTitle: "Postman Echo API Documentation",
-  customCss: '.swagger-ui .topbar { display: none }',
-  customJs: '/js/custom.js'
-}));
+app.get('/integration-testing-api', (req, res) => {
+  res.send(swaggerUi.generateHTML(integrationTestingDocument));
+});
 
-app.use('/mock-data-generation-api', swaggerUi.serve, swaggerUi.setup(mockDataGenerationDocument, {
-  customSiteTitle: "Mock Data Generation API Documentation",
-  customCss: '.swagger-ui .topbar { display: none }',
-  customJs: '/js/custom.js'
-}));
+app.get('/mock-data-generation-api', (req, res) => {
+  res.send(swaggerUi.generateHTML(mockDataGenerationDocument));
+});
 
-app.use('/performance-testing-api', swaggerUi.serve, swaggerUi.setup(performanceTestingDocument, {
-  customSiteTitle: "Performance Testing API Documentation",
-  customCss: '.swagger-ui .topbar { display: none }',
-  customJs: '/js/custom.js'
-}));
+app.get('/performance-testing-api', (req, res) => {
+  res.send(swaggerUi.generateHTML(performanceTestingDocument));
+});
 
-app.use('/regression-testing-api', swaggerUi.serve, swaggerUi.setup(regressionTestingDocument, {
-  customSiteTitle: "Regression Testing API Documentation",
-  customCss: '.swagger-ui .topbar { display: none }',
-  customJs: '/js/custom.js'
-}));
+app.get('/regression-testing-api', (req, res) => {
+  res.send(swaggerUi.generateHTML(regressionTestingDocument));
+});
+
+app.get('/postman-echo-api', (req, res) => {
+  res.send(swaggerUi.generateHTML(postmanEchoDocument));
+});
 
 // Health check endpoint for Render
 app.get('/health', (req, res) => {
