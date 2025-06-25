@@ -1,0 +1,827 @@
+openapi: 3.0.0
+info:
+  title: Regression Testing API
+  version: 1.0.0
+  description: API documentation for regression testing endpoints
+servers:
+  - url: http://localhost:3000/api/regression-testing
+    description: Regression Testing Server
+tags:
+  - name: Regression Testing
+paths:
+  /get:
+    get:
+      tags:
+        - Regression Testing
+      summary: Status Code Verification
+      description: |
+        This endpoint is designed to test and verify that the API returns the expected status codes
+        for various requests, ensuring reliability and proper error handling.
+        
+        **Test Scenarios:**
+        - **200 OK**: Verifies successful response status
+        - **Error Codes**: Tests various HTTP error status codes
+        - **Consistency**: Ensures consistent status code behavior
+        
+        **Expected Behavior:**
+        - Should return 200 OK for successful requests
+        - Should return appropriate error codes for invalid requests
+        - Status codes should be consistent across multiple requests
+        
+        **Usage:**
+        Use this endpoint to validate that your API maintains proper HTTP status code
+        behavior after updates or changes.
+      parameters:
+        - name: testType
+          in: query
+          schema:
+            type: string
+            enum: ["success", "error", "notfound", "unauthorized"]
+          description: Type of status code test to perform
+          example: success
+      responses:
+        '200':
+          description: Successful response - status code verification passed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "200 OK"
+                  message:
+                    type: string
+                    example: "Status code verification successful"
+                  timestamp:
+                    type: string
+                    format: date-time
+                  testType:
+                    type: string
+                    example: "success"
+        '400':
+          description: Bad request - for testing error status codes
+        '401':
+          description: Unauthorized - for testing authentication error codes
+        '404':
+          description: Not found - for testing resource not found error codes
+        '500':
+          description: Internal server error - for testing server error codes
+
+  /regression/json-schema:
+    post:
+      tags:
+        - Regression Testing
+      summary: JSON Schema Verification
+      description: |
+        This endpoint validates that API responses conform to specified JSON schemas,
+        ensuring API contracts are honored and data structures remain consistent.
+        
+        **Test Scenarios:**
+        - **Schema Validation**: Verifies response matches expected JSON schema
+        - **Data Structure**: Ensures consistent data structure across responses
+        - **Type Checking**: Validates data types match schema specifications
+        - **Required Fields**: Confirms all required fields are present
+        
+        **Expected Behavior:**
+        - Response should match the defined JSON schema
+        - All required properties should be present
+        - Data types should match schema specifications
+        - Nested objects should follow schema structure
+        
+        **Usage:**
+        Use this endpoint to ensure your API maintains consistent data structures
+        and follows defined contracts after updates.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: Book title
+                  author:
+                    type: string
+                    description: Book author
+                  published:
+                    type: integer
+                    description: Publication year
+                required:
+                  - title
+                  - author
+                  - published
+            example:
+              - title: "Sapiens"
+                author: "Yuval Noah Harari"
+                published: 2011
+              - title: "Moneyball"
+                author: "Michael Lewis"
+                published: 2010
+              - title: "Women & Power"
+                author: "Mary Beard"
+                published: 2017
+      responses:
+        '200':
+          description: JSON schema validation successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                        author:
+                          type: string
+                        published:
+                          type: integer
+                      required:
+                        - title
+                        - author
+                        - published
+                  validation:
+                    type: object
+                    properties:
+                      isValid:
+                        type: boolean
+                        example: true
+                      errors:
+                        type: array
+                        items:
+                          type: string
+                      timestamp:
+                        type: string
+                        format: date-time
+        '400':
+          description: Invalid JSON or schema validation failed
+        '500':
+          description: Internal server error during schema validation
+
+  /regression/response-body:
+    post:
+      tags:
+        - Regression Testing
+      summary: Response Body Verification
+      description: |
+        This endpoint validates the structure and content of response bodies for accuracy,
+        ensuring the integrity of data and preventing potential issues downstream.
+        
+        **Test Scenarios:**
+        - **Structure Validation**: Verifies response body has expected structure
+        - **Content Verification**: Validates specific values in response
+        - **Type Checking**: Ensures data types are correct
+        - **Property Existence**: Confirms required properties are present
+        
+        **Expected Behavior:**
+        - Response body should have expected structure
+        - Specific values should match expected content
+        - Data types should be correct
+        - All required properties should exist
+        
+        **Usage:**
+        Use this endpoint to validate that your API returns the correct data
+        structure and content after changes or updates.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Book title
+                author:
+                  type: string
+                  description: Book author
+                published:
+                  type: integer
+                  description: Publication year
+              required:
+                - title
+                - author
+                - published
+            example:
+              title: "Sapiens"
+              author: "Yuval Noah Harari"
+              published: 2011
+      responses:
+        '200':
+          description: Response body verification successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                        example: "Sapiens"
+                      author:
+                        type: string
+                        example: "Yuval Noah Harari"
+                      published:
+                        type: integer
+                        example: 2011
+                    required:
+                      - title
+                      - author
+                      - published
+                  verification:
+                    type: object
+                    properties:
+                      structureValid:
+                        type: boolean
+                        example: true
+                      contentValid:
+                        type: boolean
+                        example: true
+                      typeValid:
+                        type: boolean
+                        example: true
+                      timestamp:
+                        type: string
+                        format: date-time
+        '400':
+          description: Invalid request body
+        '500':
+          description: Internal server error during verification
+
+  /regression/response-time:
+    get:
+      tags:
+        - Regression Testing
+      summary: Response Time Verification
+      description: |
+        This endpoint verifies that the API's response time is within acceptable ranges,
+        providing a smooth user experience and optimizing performance.
+        
+        **Test Scenarios:**
+        - **Performance Baseline**: Establishes baseline response times
+        - **Threshold Testing**: Verifies response times stay within limits
+        - **Performance Regression**: Detects performance degradation
+        - **Load Testing**: Tests response times under different loads
+        
+        **Expected Behavior:**
+        - Response time should be less than 5 seconds
+        - Consistent response times across multiple requests
+        - No significant performance degradation over time
+        - Acceptable performance under normal load
+        
+        **Usage:**
+        Use this endpoint to monitor API performance and detect any
+        performance regressions after updates or changes.
+      parameters:
+        - name: timeout
+          in: query
+          schema:
+            type: integer
+            default: 5000
+            minimum: 100
+            maximum: 30000
+          description: Maximum acceptable response time in milliseconds
+          example: 5000
+        - name: iterations
+          in: query
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+            maximum: 100
+          description: Number of iterations to test response time
+          example: 5
+      responses:
+        '200':
+          description: Response time verification successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  performance:
+                    type: object
+                    properties:
+                      responseTime:
+                        type: integer
+                        description: Actual response time in milliseconds
+                        example: 150
+                      threshold:
+                        type: integer
+                        description: Maximum acceptable response time
+                        example: 5000
+                      isWithinThreshold:
+                        type: boolean
+                        example: true
+                      iterations:
+                        type: integer
+                        description: Number of test iterations
+                        example: 5
+                      averageResponseTime:
+                        type: number
+                        description: Average response time across iterations
+                        example: 145.2
+                  timestamp:
+                    type: string
+                    format: date-time
+        '408':
+          description: Request timeout - response time exceeded threshold
+        '500':
+          description: Internal server error during performance testing
+
+  /regression/headers:
+    get:
+      tags:
+        - Regression Testing
+      summary: Header Verification
+      description: |
+        This endpoint confirms the presence and correct values of specific headers
+        in the response, enabling secure and well-structured communication.
+        
+        **Test Scenarios:**
+        - **Required Headers**: Verifies presence of required response headers
+        - **Header Values**: Validates correct header values
+        - **Security Headers**: Checks security-related headers
+        - **Content Headers**: Validates content-type and related headers
+        
+        **Expected Behavior:**
+        - Content-Type header should include application/json
+        - Content-Length header should be present
+        - Security headers should be properly set
+        - CORS headers should be configured correctly
+        
+        **Usage:**
+        Use this endpoint to ensure your API maintains proper header
+        configuration and security settings after updates.
+      parameters:
+        - name: validateContentType
+          in: query
+          schema:
+            type: boolean
+            default: true
+          description: Whether to validate Content-Type header
+          example: true
+        - name: validateSecurity
+          in: query
+          schema:
+            type: boolean
+            default: true
+          description: Whether to validate security headers
+          example: true
+      responses:
+        '200':
+          description: Header verification successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  headers:
+                    type: object
+                    description: Response headers
+                    additionalProperties:
+                      type: string
+                  verification:
+                    type: object
+                    properties:
+                      contentTypeValid:
+                        type: boolean
+                        example: true
+                      contentLengthPresent:
+                        type: boolean
+                        example: true
+                      securityHeadersValid:
+                        type: boolean
+                        example: true
+                      corsHeadersValid:
+                        type: boolean
+                        example: true
+                      timestamp:
+                        type: string
+                        format: date-time
+        '400':
+          description: Invalid header configuration
+        '500':
+          description: Internal server error during header verification 
+info:
+  title: Regression Testing API
+  version: 1.0.0
+  description: API documentation for regression testing endpoints
+servers:
+  - url: http://localhost:3000/api/regression-testing
+    description: Regression Testing Server
+tags:
+  - name: Regression Testing
+paths:
+  /regression/status-code:
+    get:
+      tags:
+        - Regression Testing
+      summary: Status Code Verification
+      description: |
+        This endpoint is designed to test and verify that the API returns the expected status codes
+        for various requests, ensuring reliability and proper error handling.
+        
+        **Test Scenarios:**
+        - **200 OK**: Verifies successful response status
+        - **Error Codes**: Tests various HTTP error status codes
+        - **Consistency**: Ensures consistent status code behavior
+        
+        **Expected Behavior:**
+        - Should return 200 OK for successful requests
+        - Should return appropriate error codes for invalid requests
+        - Status codes should be consistent across multiple requests
+        
+        **Usage:**
+        Use this endpoint to validate that your API maintains proper HTTP status code
+        behavior after updates or changes.
+      parameters:
+        - name: testType
+          in: query
+          schema:
+            type: string
+            enum: ["success", "error", "notfound", "unauthorized"]
+          description: Type of status code test to perform
+          example: success
+      responses:
+        '200':
+          description: Successful response - status code verification passed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "200 OK"
+                  message:
+                    type: string
+                    example: "Status code verification successful"
+                  timestamp:
+                    type: string
+                    format: date-time
+                  testType:
+                    type: string
+                    example: "success"
+        '400':
+          description: Bad request - for testing error status codes
+        '401':
+          description: Unauthorized - for testing authentication error codes
+        '404':
+          description: Not found - for testing resource not found error codes
+        '500':
+          description: Internal server error - for testing server error codes
+
+  /regression/json-schema:
+    post:
+      tags:
+        - Regression Testing
+      summary: JSON Schema Verification
+      description: |
+        This endpoint validates that API responses conform to specified JSON schemas,
+        ensuring API contracts are honored and data structures remain consistent.
+        
+        **Test Scenarios:**
+        - **Schema Validation**: Verifies response matches expected JSON schema
+        - **Data Structure**: Ensures consistent data structure across responses
+        - **Type Checking**: Validates data types match schema specifications
+        - **Required Fields**: Confirms all required fields are present
+        
+        **Expected Behavior:**
+        - Response should match the defined JSON schema
+        - All required properties should be present
+        - Data types should match schema specifications
+        - Nested objects should follow schema structure
+        
+        **Usage:**
+        Use this endpoint to ensure your API maintains consistent data structures
+        and follows defined contracts after updates.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  title:
+                    type: string
+                    description: Book title
+                  author:
+                    type: string
+                    description: Book author
+                  published:
+                    type: integer
+                    description: Publication year
+                required:
+                  - title
+                  - author
+                  - published
+            example:
+              - title: "Sapiens"
+                author: "Yuval Noah Harari"
+                published: 2011
+              - title: "Moneyball"
+                author: "Michael Lewis"
+                published: 2010
+              - title: "Women & Power"
+                author: "Mary Beard"
+                published: 2017
+      responses:
+        '200':
+          description: JSON schema validation successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                        author:
+                          type: string
+                        published:
+                          type: integer
+                      required:
+                        - title
+                        - author
+                        - published
+                  validation:
+                    type: object
+                    properties:
+                      isValid:
+                        type: boolean
+                        example: true
+                      errors:
+                        type: array
+                        items:
+                          type: string
+                      timestamp:
+                        type: string
+                        format: date-time
+        '400':
+          description: Invalid JSON or schema validation failed
+        '500':
+          description: Internal server error during schema validation
+
+  /regression/response-body:
+    post:
+      tags:
+        - Regression Testing
+      summary: Response Body Verification
+      description: |
+        This endpoint validates the structure and content of response bodies for accuracy,
+        ensuring the integrity of data and preventing potential issues downstream.
+        
+        **Test Scenarios:**
+        - **Structure Validation**: Verifies response body has expected structure
+        - **Content Verification**: Validates specific values in response
+        - **Type Checking**: Ensures data types are correct
+        - **Property Existence**: Confirms required properties are present
+        
+        **Expected Behavior:**
+        - Response body should have expected structure
+        - Specific values should match expected content
+        - Data types should be correct
+        - All required properties should exist
+        
+        **Usage:**
+        Use this endpoint to validate that your API returns the correct data
+        structure and content after changes or updates.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  description: Book title
+                author:
+                  type: string
+                  description: Book author
+                published:
+                  type: integer
+                  description: Publication year
+              required:
+                - title
+                - author
+                - published
+            example:
+              title: "Sapiens"
+              author: "Yuval Noah Harari"
+              published: 2011
+      responses:
+        '200':
+          description: Response body verification successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                        example: "Sapiens"
+                      author:
+                        type: string
+                        example: "Yuval Noah Harari"
+                      published:
+                        type: integer
+                        example: 2011
+                    required:
+                      - title
+                      - author
+                      - published
+                  verification:
+                    type: object
+                    properties:
+                      structureValid:
+                        type: boolean
+                        example: true
+                      contentValid:
+                        type: boolean
+                        example: true
+                      typeValid:
+                        type: boolean
+                        example: true
+                      timestamp:
+                        type: string
+                        format: date-time
+        '400':
+          description: Invalid request body
+        '500':
+          description: Internal server error during verification
+
+  /regression/response-time:
+    get:
+      tags:
+        - Regression Testing
+      summary: Response Time Verification
+      description: |
+        This endpoint verifies that the API's response time is within acceptable ranges,
+        providing a smooth user experience and optimizing performance.
+        
+        **Test Scenarios:**
+        - **Performance Baseline**: Establishes baseline response times
+        - **Threshold Testing**: Verifies response times stay within limits
+        - **Performance Regression**: Detects performance degradation
+        - **Load Testing**: Tests response times under different loads
+        
+        **Expected Behavior:**
+        - Response time should be less than 5 seconds
+        - Consistent response times across multiple requests
+        - No significant performance degradation over time
+        - Acceptable performance under normal load
+        
+        **Usage:**
+        Use this endpoint to monitor API performance and detect any
+        performance regressions after updates or changes.
+      parameters:
+        - name: timeout
+          in: query
+          schema:
+            type: integer
+            default: 5000
+            minimum: 100
+            maximum: 30000
+          description: Maximum acceptable response time in milliseconds
+          example: 5000
+        - name: iterations
+          in: query
+          schema:
+            type: integer
+            default: 1
+            minimum: 1
+            maximum: 100
+          description: Number of iterations to test response time
+          example: 5
+      responses:
+        '200':
+          description: Response time verification successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  performance:
+                    type: object
+                    properties:
+                      responseTime:
+                        type: integer
+                        description: Actual response time in milliseconds
+                        example: 150
+                      threshold:
+                        type: integer
+                        description: Maximum acceptable response time
+                        example: 5000
+                      isWithinThreshold:
+                        type: boolean
+                        example: true
+                      iterations:
+                        type: integer
+                        description: Number of test iterations
+                        example: 5
+                      averageResponseTime:
+                        type: number
+                        description: Average response time across iterations
+                        example: 145.2
+                  timestamp:
+                    type: string
+                    format: date-time
+        '408':
+          description: Request timeout - response time exceeded threshold
+        '500':
+          description: Internal server error during performance testing
+
+  /regression/headers:
+    get:
+      tags:
+        - Regression Testing
+      summary: Header Verification
+      description: |
+        This endpoint confirms the presence and correct values of specific headers
+        in the response, enabling secure and well-structured communication.
+        
+        **Test Scenarios:**
+        - **Required Headers**: Verifies presence of required response headers
+        - **Header Values**: Validates correct header values
+        - **Security Headers**: Checks security-related headers
+        - **Content Headers**: Validates content-type and related headers
+        
+        **Expected Behavior:**
+        - Content-Type header should include application/json
+        - Content-Length header should be present
+        - Security headers should be properly set
+        - CORS headers should be configured correctly
+        
+        **Usage:**
+        Use this endpoint to ensure your API maintains proper header
+        configuration and security settings after updates.
+      parameters:
+        - name: validateContentType
+          in: query
+          schema:
+            type: boolean
+            default: true
+          description: Whether to validate Content-Type header
+          example: true
+        - name: validateSecurity
+          in: query
+          schema:
+            type: boolean
+            default: true
+          description: Whether to validate security headers
+          example: true
+      responses:
+        '200':
+          description: Header verification successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  headers:
+                    type: object
+                    description: Response headers
+                    additionalProperties:
+                      type: string
+                  verification:
+                    type: object
+                    properties:
+                      contentTypeValid:
+                        type: boolean
+                        example: true
+                      contentLengthPresent:
+                        type: boolean
+                        example: true
+                      securityHeadersValid:
+                        type: boolean
+                        example: true
+                      corsHeadersValid:
+                        type: boolean
+                        example: true
+                      timestamp:
+                        type: string
+                        format: date-time
+        '400':
+          description: Invalid header configuration
+        '500':
+          description: Internal server error during header verification

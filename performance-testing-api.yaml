@@ -1,0 +1,293 @@
+openapi: 3.0.0
+info:
+  title: Performance Testing API
+  version: 1.0.0
+  description: API documentation for performance testing endpoints
+servers:
+  - url: http://localhost:3000/api/performance-testing
+    description: Performance Testing Server
+tags:
+  - name: Performance Testing
+paths:
+  /performance/small-query:
+    get:
+      tags:
+        - Performance Testing
+      summary: Small Query Parameters Test
+      description: |
+        This endpoint is designed to test API performance with a minimal set of query parameters.
+        It provides a baseline for measuring API response times under normal conditions and
+        helps establish performance benchmarks for simple requests.
+        
+        **Test Scenarios:**
+        - **Baseline Performance**: Establishes normal response time benchmarks
+        - **Simple Request Handling**: Tests basic query parameter processing
+        - **API Responsiveness**: Measures response time for lightweight requests
+        - **Error-Free Operation**: Validates API stability under normal load
+        
+        **Expected Performance:**
+        - Response time should be less than 500ms
+        - Consistent response times across multiple requests
+        - No errors or timeouts under normal conditions
+        
+        **Usage:**
+        Use this endpoint to establish baseline performance metrics and compare
+        against more complex request scenarios to identify performance degradation.
+      parameters:
+        - name: foo1
+          in: query
+          schema:
+            type: string
+          example: bar1
+          description: First test parameter
+        - name: foo2
+          in: query
+          schema:
+            type: string
+          example: bar2
+          description: Second test parameter
+      responses:
+        '200':
+          description: Successful response with echoed query parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  args:
+                    type: object
+                    description: Echoed query parameters
+                    properties:
+                      foo1:
+                        type: string
+                        example: bar1
+                      foo2:
+                        type: string
+                        example: bar2
+                  url:
+                    type: string
+                    description: Full request URL
+                    example: "https://postman-echo.com/get?foo1=bar1&foo2=bar2"
+                  headers:
+                    type: object
+                    description: Request headers
+                    additionalProperties:
+                      type: string
+        '400':
+          description: Bad request - invalid parameters
+        '500':
+          description: Internal server error
+
+  /performance/large-query:
+    get:
+      tags:
+        - Performance Testing
+      summary: Large Query Parameters Test
+      description: |
+        This endpoint is designed to test API performance with a large set of query parameters.
+        It simulates complex requests with multiple query parameters to assess how well your API 
+        handles significant load and analyze response times under stress conditions.
+        
+        **Test Scenarios:**
+        - **API Performance**: Tests response time under heavy query parameter load
+        - **URL Length Handling**: Validates API behavior with very long URLs
+        - **Parameter Processing**: Assesses efficiency of query parameter parsing
+        - **Memory Usage**: Monitors resource consumption with large parameter sets
+        
+        **Expected Performance:**
+        - Response time should be less than 1000ms
+        - API should handle URLs up to 2048 characters
+        - No timeout or memory issues should occur
+        
+        **Usage:**
+        Use this endpoint to identify potential bottlenecks in query parameter processing
+        and optimize your API for handling complex requests efficiently.
+      parameters:
+        - name: foo1
+          in: query
+          schema:
+            type: string
+          example: bar1
+          description: Test parameter 1
+        - name: foo2
+          in: query
+          schema:
+            type: string
+          example: bar2
+          description: Test parameter 2 (repeated multiple times)
+        - name: foo3
+          in: query
+          schema:
+            type: string
+          example: bar3
+          description: Test parameter 3
+        - name: foo4
+          in: query
+          schema:
+            type: string
+          example: bar4
+          description: Test parameter 4
+        - name: foo5
+          in: query
+          schema:
+            type: string
+          example: bar5
+          description: Test parameter 5 (repeated multiple times)
+        - name: foo6
+          in: query
+          schema:
+            type: string
+          example: bar6
+          description: Test parameter 6 (repeated multiple times)
+        - name: foo7
+          in: query
+          schema:
+            type: string
+          example: bar7
+          description: Test parameter 7 (repeated multiple times)
+        - name: foo8
+          in: query
+          schema:
+            type: string
+          example: bar8
+          description: Test parameter 8 (repeated multiple times)
+        - name: foo9
+          in: query
+          schema:
+            type: string
+          example: bar9
+          description: Test parameter 9 (repeated multiple times)
+        - name: foo10
+          in: query
+          schema:
+            type: string
+          example: bar10
+          description: Test parameter 10 (repeated multiple times)
+      responses:
+        '200':
+          description: Successful response with echoed query parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  args:
+                    type: object
+                    description: Echoed query parameters
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: string
+                  url:
+                    type: string
+                    description: Full request URL
+                  headers:
+                    type: object
+                    description: Request headers
+                    additionalProperties:
+                      type: string
+        '400':
+          description: Bad request - URL too long or invalid parameters
+        '414':
+          description: URI too long - exceeds maximum URL length
+        '500':
+          description: Internal server error during parameter processing
+
+  /performance/load-test:
+    get:
+      tags:
+        - Performance Testing
+      summary: Load Testing Endpoint
+      description: |
+        A configurable endpoint for conducting various load tests with different parameter sizes.
+        This endpoint allows you to specify the number and size of query parameters to test
+        different load scenarios systematically.
+        
+        **Test Configurations:**
+        - **Light Load**: 1-10 parameters
+        - **Medium Load**: 11-50 parameters  
+        - **Heavy Load**: 51-100 parameters
+        - **Stress Load**: 100+ parameters
+        
+        **Performance Metrics:**
+        - Response time measurement
+        - Throughput analysis
+        - Error rate monitoring
+        - Resource utilization tracking
+        
+        **Usage:**
+        Use query parameters to configure the test load and analyze how your API
+        performs under different stress levels.
+      parameters:
+        - name: paramCount
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 10
+          description: Number of query parameters to generate
+          example: 50
+        - name: paramSize
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 10
+          description: Size of each parameter value in characters
+          example: 100
+        - name: delay
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 10000
+            default: 0
+          description: Artificial delay in milliseconds to simulate processing time
+          example: 100
+      responses:
+        '200':
+          description: Load test completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  testConfig:
+                    type: object
+                    description: Test configuration used
+                    properties:
+                      paramCount:
+                        type: integer
+                        description: Number of parameters generated
+                      paramSize:
+                        type: integer
+                        description: Size of each parameter
+                      delay:
+                        type: integer
+                        description: Artificial delay applied
+                  performance:
+                    type: object
+                    description: Performance metrics
+                    properties:
+                      responseTime:
+                        type: integer
+                        description: Response time in milliseconds
+                      urlLength:
+                        type: integer
+                        description: Total URL length in characters
+                      paramCount:
+                        type: integer
+                        description: Actual number of parameters processed
+                  args:
+                    type: object
+                    description: Generated query parameters
+                    additionalProperties:
+                      type: string
+        '400':
+          description: Invalid test configuration
+        '413':
+          description: Payload too large - exceeds maximum URL length
+        '500':
+          description: Internal server error during load test 

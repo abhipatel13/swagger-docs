@@ -1,0 +1,190 @@
+openapi: 3.0.0
+info:
+  title: Postman Echo API
+  version: 1.0.0
+  description: API documentation for Postman Echo endpoints
+servers:
+  - url: http://localhost:3000/api/echo
+    description: Postman Echo Server
+tags:
+  - name: Postman Echo API
+paths:
+  /get:
+    get:
+      tags:
+        - Postman Echo API
+      summary: Echo GET Request
+      description: |
+        A simple GET request that echos the request details in the response.
+        This single endpoint covers the following tests from the "Intro to Writing Tests" Postman collection:
+        - **Basic test syntax > pm.test**
+        - **Basic test syntax > pm.expect and pm.response**
+        - **API tests > Status**
+        - **API tests > JSON schema v4 validation**
+      parameters:
+        - name: foo1
+          in: query
+          schema:
+            type: string
+          example: bar1
+        - name: foo2
+          in: query
+          schema:
+            type: string
+          example: bar2
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  args:
+                    type: object
+                    description: Echoed query parameters
+                    properties:
+                      foo1:
+                        type: string
+                        example: bar1
+                      foo2:
+                        type: string
+                        example: bar2
+                  url:
+                    type: string
+                    description: Full request URL
+                    example: "https://postman-echo.com/get?foo1=bar1&foo2=bar2"
+                  headers:
+                    type: object
+                    description: Request headers
+                    additionalProperties:
+                      type: string
+  /put:
+    put:
+      tags:
+        - Postman Echo API
+      summary: Echo PUT Request
+      description: |
+        A simple PUT request that echos the request details in the response.
+        This endpoint covers the **API tests > Performance** test from the "Intro to Writing Tests" Postman collection.
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              example: This is expected to be sent back as part of response body.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  args:
+                    type: object
+                    description: Query parameters
+                  data:
+                    type: string
+                    description: Request body data
+                  files:
+                    type: object
+                    description: File uploads
+                  form:
+                    type: object
+                    description: Form data
+                  headers:
+                    type: object
+                    description: Request headers
+                  json:
+                    type: object
+                    description: JSON payload
+                  url:
+                    type: string
+                    description: Request URL
+  /patch:
+    patch:
+      tags:
+        - Postman Echo API
+      summary: Echo PATCH Request
+      description: |
+        A simple PATCH request that echos the request details in the response.
+        This endpoint covers the **API tests > Data type** test from the "Intro to Writing Tests" Postman collection.
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              example: This is expected to be sent back as part of response body.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  args:
+                    type: object
+                    description: Query parameters
+                  data:
+                    type: string
+                    description: Request body data
+                  files:
+                    type: object
+                    description: File uploads
+                  form:
+                    type: object
+                    description: Form data
+                  headers:
+                    type: object
+                    description: Request headers
+                  json:
+                    type: object
+                    description: JSON payload
+                  url:
+                    type: string
+                    description: Request URL
+  /delete:
+    delete:
+      tags:
+        - Postman Echo API
+      summary: Echo DELETE Request
+      description: |
+        A simple DELETE request that echos the request details in the response.
+        This endpoint covers the **API tests > Functional2** test from the "Intro to Writing Tests" Postman collection.
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              example: This is expected to be sent back as part of response body.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  args:
+                    type: object
+                    description: Query parameters
+                  data:
+                    type: string
+                    description: Request body data
+                  files:
+                    type: object
+                    description: File uploads
+                  form:
+                    type: object
+                    description: Form data
+                  headers:
+                    type: object
+                    description: Request headers
+                  json:
+                    type: object
+                    description: JSON payload
+                  url:
+                    type: string
+                    description: Request URL 

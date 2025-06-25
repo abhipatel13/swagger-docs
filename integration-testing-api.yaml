@@ -1,0 +1,78 @@
+openapi: 3.0.0
+info:
+  title: Integration Testing API
+  version: 1.0.0
+  description: API documentation for integration testing endpoints
+servers:
+  - url: http://localhost:3000/api/integration-testing
+    description: Integration Testing Server
+tags:
+  - name: Integration Testing API
+paths:
+  /register:
+    post:
+      tags:
+        - Integration Testing API
+      summary: Register and get a token
+      description: Returns a token that you can use to retrieve information later on.
+      responses:
+        '200':
+          description: An access token is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "a-unique-token-string"
+  /my-name:
+    get:
+      tags:
+        - Integration Testing API
+      summary: Get your secret name
+      description: This request uses a token to access a secret 'name' stored against that token.
+      parameters:
+        - name: token
+          in: query
+          required: true
+          description: The token received from the /register endpoint.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A name is returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: "Your Secret Name"
+  /unregister:
+    post:
+      tags:
+        - Integration Testing API
+      summary: Unregister a token
+      description: This request un-registers a token by sending it in the request body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                  description: The token to unregister.
+      responses:
+        '200':
+          description: The token was successfully unregistered.
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK" 

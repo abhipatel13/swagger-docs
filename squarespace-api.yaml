@@ -1,0 +1,578 @@
+openapi: 3.0.0
+info:
+  title: Squarespace API
+  version: 1.0.0
+  description: API documentation for Squarespace e-commerce endpoints
+servers:
+  - url: http://localhost:3000/api/squarespace
+    description: Diversociete API via Local Proxy
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+tags:
+  - name: Inventory API
+  - name: Orders API
+  - name: Products API
+  - name: Profiles API
+  - name: Transactions API
+paths:
+  /1.0/commerce/inventory:
+    get:
+      tags:
+        - Inventory API
+      summary: Retrieve all inventory
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/commerce/inventory/319a4397-d744-4edb-9ad9-675326519e06:
+    get:
+      tags:
+        - Inventory API
+      summary: Retrieve specific inventory
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/commerce/inventory/adjustments:
+    post:
+      tags:
+        - Inventory API
+      summary: Adjust stock quantities
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                incrementOperations:
+                  - variantId: 319a4397-d744-4edb-9ad9-675326519e06
+                    quantity: 10
+                decrementOperations:
+                  - variantId: 8e051327-b37b-417c-a1a6-f324983ae226
+                    quantity: 1
+                setFiniteOperations:
+                  - variantId: d76859d6-139b-4fa5-83f2-5f5c60539bfb
+                    quantity: 40
+                setUnlimitedOperations:
+                  - 85218f8f-2530-45b1-a976-39f8e7380212
+                  - 4730901c-2b6d-4f8a-87c2-75d79a8822d6
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          schema:
+            type: string
+          example: d76859d6-139b-4fa5-83f2-5f5c60539bfb
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/commerce/orders:
+    post:
+      tags:
+        - Orders API
+      summary: Create an order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                channelName: Non-Squarespace Store
+                externalOrderReference: ORDER1234567
+                customerEmail: john@example.com
+                billingAddress:
+                  firstName: John
+                  lastName: Doe
+                  address1: 8 Clarkson Street
+                  address2: Unit 2F
+                  city: New York
+                  state: NY
+                  countryCode: US
+                  postalCode: '10014'
+                  phone: 999-999-9999
+                shippingAddress:
+                  firstName: Jane
+                  lastName: Smith
+                  address1: 225 Varick Street
+                  address2: 12th Floor
+                  city: New York
+                  state: NY
+                  countryCode: US
+                  postalCode: '10014'
+                  phone: 999-999-9999
+                inventoryBehavior: SKIP
+                lineItems:
+                  - lineItemType: PHYSICAL_PRODUCT
+                    variantId: AF705384-7641-4E8E-9F0A-C7E43BF88AB
+                    quantity: 99
+                    unitPricePaid:
+                      currency: USD
+                      value: '12.99'
+                    nonSaleUnitPrice:
+                      currency: USD
+                      value: '15.99'
+                  - lineItemType: CUSTOM
+                    title: Gift Wrapping
+                    quantity: 1
+                    unitPricePaid:
+                      currency: USD
+                      value: '4.00'
+                    nonSaleUnitPrice:
+                      currency: USD
+                      value: '4.00'
+                shippingLines:
+                  - method: Flat Rate
+                    amount:
+                      currency: USD
+                      value: '5.99'
+                discountLines:
+                  - promoCode: SPRING-20
+                    name: Spring Discount 20% Off
+                    amount:
+                      currency: USD
+                      value: '257.20'
+                priceTaxInterpretation: EXCLUSIVE
+                subtotal:
+                  currency: USD
+                  value: '1290.01'
+                shippingTotal:
+                  currency: USD
+                  value: '5.99'
+                discountTotal:
+                  currency: USD
+                  value: '257.20'
+                taxTotal:
+                  currency: USD
+                  value: '77.40'
+                grandTotal:
+                  currency: USD
+                  value: '1116.20'
+                fulfillmentStatus: FULFILLED
+                shopperFulfillmentNotificationBehavior: SEND
+                fulfilledOn: '2017-01-29T22:19:26.980Z'
+                fulfillments:
+                  - shipDate: '2017-01-29T22:19:26.980Z'
+                    carrierName: FedEx
+                    service: Same-Day Delivery
+                    trackingNumber: ABC 123
+                    trackingUrl: https://fedex.com/track?q=ABC%20123
+                createdOn: '2017-01-25T17:13:26.205Z'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          schema:
+            type: string
+          example: 319a4397-d744-4edb-9ad9-675326519e06
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Orders API
+      summary: Retrieve all orders
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: fulfillmentStatus
+          in: query
+          schema:
+            type: string
+          example: PENDING
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/commerce/orders/63adef03ba7c0a6f71ece200:
+    get:
+      tags:
+        - Orders API
+      summary: Retrieve a specific order
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: customerEmail
+          in: query
+          schema:
+            type: string
+          example: '{{customerEmail}}'
+        - name: orderNumber
+          in: query
+          schema:
+            type: string
+          example: '{{orderNumber}}'
+        - name: id
+          in: query
+          schema:
+            type: string
+          example: '{{id}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/commerce/store_pages:
+    get:
+      tags:
+        - Products API
+      summary: Retrieve all Store Pages
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/commerce/products:
+    post:
+      tags:
+        - Products API
+      summary: Create a product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                type: PHYSICAL
+                storePageId: 6338ee529239c073496ce549
+                name: Artisanal Steak Dry Rub
+                description: >-
+                  <p>This can be a few words or even a few
+                  <i>paragraphs</i>.</p>
+                urlSlug: artisanal-steak-dry-r5b
+                tags:
+                  - artisanal
+                  - steak
+                isVisible: true
+                variantAttributes:
+                  - Flavor
+                variants:
+                  - sku: SQ1121774
+                    pricing:
+                      basePrice:
+                        currency: USD
+                        value: '12.95'
+                      onSale: false
+                      salePrice:
+                        currency: USD
+                        value: '0.00'
+                    stock:
+                      quantity: 10
+                      unlimited: false
+                    attributes:
+                      Flavor: Habanero
+                    shippingMeasurements:
+                      weight:
+                        unit: POUND
+                        value: 2
+                      dimensions:
+                        unit: INCH
+                        length: 7
+                        width: 5
+                        height: 5
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Products API
+      summary: Retrieve all products
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: modifiedAfter
+          in: query
+          schema:
+            type: string
+          example: '2021-08-05T21:02:28.557Z'
+        - name: modifiedBefore
+          in: query
+          schema:
+            type: string
+          example: '2022-06-06T16:45:53.842Z'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/commerce/products/63baff4b0dc12d5b59f0fd0b/variants:
+    post:
+      tags:
+        - Products API
+      summary: Create a product variant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                sku: SQ1121775
+                pricing:
+                  basePrice:
+                    currency: USD
+                    value: '10.95'
+                  onSale: true
+                  salePrice:
+                    currency: USD
+                    value: '7.99'
+                stock:
+                  quantity: 10
+                  unlimited: false
+                attributes:
+                  Flavor: BBQ
+                shippingMeasurements:
+                  weight:
+                    unit: POUND
+                    value: 1
+                  dimensions:
+                    unit: INCH
+                    length: 3
+                    width: 8
+                    height: 11
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/commerce/products/63b9bb5d52214e4fafdf0fc9/images:
+    post:
+      tags:
+        - Products API
+      summary: Upload a product image
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                name:
+                  type: string
+                  example: test image
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/commerce/products/6338ee529239c073496ce596:
+    get:
+      tags:
+        - Products API
+      summary: Retrieve specific products
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Products API
+      summary: Update a product
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: Artisanal Steak Dry Rub
+                description: This can be a few words or even a few paragraphs.
+                urlSlug: artisanal-steak-dry-j5k
+                tags:
+                  - artisanal
+                  - steak
+                isVisible: true
+                variantAttributes:
+                  - Flavor
+                seoOptions:
+                  title: Artisanal Cooking
+                  description: A one-stop shop for artisanal cooking tips and products.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/commerce/products/63b9bb5d52214e4fafdf0fc9/images/63b9c87b220cb216b353b788:
+    post:
+      tags:
+        - Products API
+      summary: Update a product image
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                altText: Steak
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/commerce/products/63b9bb5d52214e4fafdf0fc9:
+    delete:
+      tags:
+        - Products API
+      summary: Delete a product
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/commerce/products/63b9bb5d52214e4fafdf0fc9/variants/37c5147e-32a4-4095-9440-418dcc09c252:
+    delete:
+      tags:
+        - Products API
+      summary: Delete a product variant
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/commerce/products/63b9d0ed52214e4fafdf1f6d/images/63b9c87b220cb216b353b788:
+    delete:
+      tags:
+        - Products API
+      summary: Delete a product image
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/profiles/:
+    get:
+      tags:
+        - Profiles API
+      summary: Retrieve all profiles
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: filter
+          in: query
+          schema:
+            type: string
+          example: isCustomer
+        - name: sortDirection
+          in: query
+          schema:
+            type: string
+          example: dsc
+        - name: sortField
+          in: query
+          schema:
+            type: string
+          example: email
+        - name: customerEmail
+          in: query
+          schema:
+            type: string
+          example: '{{customerEmail}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/profiles/63a3ff09f7f4e146d0d2260a,63baffa9056ba01841d1e91f:
+    get:
+      tags:
+        - Profiles API
+      summary: Retrieve specific profiles
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: customerEmail
+          in: query
+          schema:
+            type: string
+          example: '{{customerEmail}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/commerce/transactions:
+    get:
+      tags:
+        - Transactions API
+      summary: Retrieve all transactions
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: customerEmail
+          in: query
+          schema:
+            type: string
+          example: '{{customerEmail}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/commerce/transactions/0ef7144b-7ff6-4e12-8013-a51042d492d2:
+    get:
+      tags:
+        - Transactions API
+      summary: Retrieve specific transactions
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: customerEmail
+          in: query
+          schema:
+            type: string
+          example: '{{customerEmail}}'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /1.0/authorization/website:
+    get:
+      tags:
+        - default
+      summary: Retrieve basic site information
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {} 

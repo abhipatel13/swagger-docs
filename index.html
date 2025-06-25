@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Documentation Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .nav-menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 40px;
+        }
+
+        .nav-item {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 25px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .nav-item:hover::before {
+            left: 100%;
+        }
+
+        .nav-item h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .nav-item p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .nav-item .endpoint-count {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .nav-item .status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #27ae60;
+        }
+
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .nav-menu {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>API Documentation Hub</h1>
+            <p>Comprehensive API documentation for all services</p>
+        </div>
+
+        <div class="nav-menu">
+            <a href="/squarespace-api" class="nav-item">
+                <div class="status"></div>
+                <h3>Squarespace API</h3>
+                <p>E-commerce platform API for inventory management, orders, products, profiles, and transactions.</p>
+                <span class="endpoint-count">15+ endpoints</span>
+            </a>
+
+            <a href="/integration-testing-api" class="nav-item">
+                <div class="status"></div>
+                <h3>Integration Testing API</h3>
+                <p>Token-based authentication testing with register, retrieve, and unregister functionality.</p>
+                <span class="endpoint-count">3 endpoints</span>
+            </a>
+
+            <a href="/postman-echo-api" class="nav-item">
+                <div class="status"></div>
+                <h3>Postman Echo API</h3>
+                <p>Echo service for testing HTTP methods (GET, PUT, PATCH, DELETE) with request/response mirroring.</p>
+                <span class="endpoint-count">4 endpoints</span>
+            </a>
+
+            <a href="/mock-data-generation-api" class="nav-item">
+                <div class="status"></div>
+                <h3>Mock Data Generation API</h3>
+                <p>Generate realistic mock data for users, purchases, and blog posts with comprehensive schemas.</p>
+                <span class="endpoint-count">4 endpoints</span>
+            </a>
+
+            <a href="/performance-testing-api" class="nav-item">
+                <div class="status"></div>
+                <h3>Performance Testing API</h3>
+                <p>Load testing and performance benchmarking with configurable query parameters and response time analysis.</p>
+                <span class="endpoint-count">3 endpoints</span>
+            </a>
+
+            <a href="/regression-testing-api" class="nav-item">
+                <div class="status"></div>
+                <h3>Regression Testing API</h3>
+                <p>Comprehensive regression testing for status codes, JSON schemas, response bodies, timing, and headers.</p>
+                <span class="endpoint-count">5 endpoints</span>
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>API Documentation Hub | Built with Express.js and Swagger UI</p>
+            <p>Server running on <a href="http://localhost:3000">http://localhost:3000</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            const navItems = document.querySelectorAll('.nav-item');
+            
+            navItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    // Add a small delay to show the click effect
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+
+            // Add status indicators (you can modify these based on actual API status)
+            const statusIndicators = document.querySelectorAll('.status');
+            statusIndicators.forEach(indicator => {
+                // Simulate API status check (in real implementation, you'd check actual API health)
+                const isOnline = Math.random() > 0.1; // 90% chance of being online
+                indicator.style.background = isOnline ? '#27ae60' : '#e74c3c';
+                indicator.title = isOnline ? 'API Online' : 'API Offline';
+            });
+        });
+    </script>
+</body>
+</html> 

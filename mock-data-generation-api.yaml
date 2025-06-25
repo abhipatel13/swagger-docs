@@ -1,0 +1,624 @@
+openapi: 3.0.0
+info:
+  title: Mock Data Generation API
+  version: 1.0.0
+  description: API documentation for mock data generation endpoints
+servers:
+  - url: http://localhost:3000/api/mock-data-generation
+    description: Mock Data Generation Server
+components:
+  schemas:
+    MockUser:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - email
+        - createdAt
+      properties:
+        firstName:
+          type: string
+          description: User's first name
+          example: "{{$randomFirstName}}"
+          minLength: 1
+          maxLength: 50
+        lastName:
+          type: string
+          description: User's last name
+          example: "{{$randomLastName}}"
+          minLength: 1
+          maxLength: 50
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: "{{$randomEmail}}"
+          pattern: "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
+        phone:
+          type: string
+          description: User's phone number
+          example: "{{$randomPhoneNumber}}"
+          pattern: "^[+]?[0-9\\s\\-\\(\\)]{10,}$"
+        createdAt:
+          type: string
+          format: date-time
+          description: User account creation timestamp
+          example: "{{$isoTimestamp}}"
+        address:
+          type: object
+          description: User's address information
+          properties:
+            line1:
+              type: string
+              description: Primary address line
+              example: "{{$randomStreetAddress}}"
+              minLength: 5
+              maxLength: 100
+            line2:
+              type: string
+              description: Secondary address line (apartment, suite, etc.)
+              example: "{{$randomCity}}"
+              maxLength: 100
+            country:
+              type: string
+              description: Country code (ISO 3166-1 alpha-2)
+              example: "{{$randomCountryCode}}"
+              pattern: "^[A-Z]{2}$"
+            zipCode:
+              type: string
+              description: Postal/ZIP code
+              example: "{{$randomZipCode}}"
+              maxLength: 20
+          required:
+            - line1
+            - country
+        profile:
+          type: object
+          description: Additional user profile information
+          properties:
+            age:
+              type: integer
+              description: User's age
+              example: "{{$randomInt}}"
+              minimum: 13
+              maximum: 120
+            gender:
+              type: string
+              description: User's gender
+              example: "{{$randomArrayItem}}"
+              enum: ["Male", "Female", "Other", "Prefer not to say"]
+            occupation:
+              type: string
+              description: User's job title or occupation
+              example: "{{$randomJobTitle}}"
+              maxLength: 100
+            dateOfBirth:
+              type: string
+              format: date
+              description: User's date of birth
+              example: "{{$randomDate}}"
+            preferences:
+              type: object
+              description: User preferences and settings
+              properties:
+                newsletter:
+                  type: boolean
+                  description: Whether user wants to receive newsletter
+                  example: "{{$randomBoolean}}"
+                notifications:
+                  type: boolean
+                  description: Whether user wants push notifications
+                  example: "{{$randomBoolean}}"
+                language:
+                  type: string
+                  description: Preferred language
+                  example: "{{$randomArrayItem}}"
+                  enum: ["en", "es", "fr", "de", "it"]
+    MockPurchase:
+      type: object
+      required:
+        - userId
+        - payment
+        - basket
+        - createdAt
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: Unique identifier of the user making the purchase
+          example: "{{$guid}}"
+        orderNumber:
+          type: string
+          description: Human-readable order number
+          example: "{{$randomInt}}"
+          pattern: "^[A-Z0-9]{8,}$"
+        payment:
+          type: object
+          description: Payment information and details
+          required:
+            - cardNumber
+            - currency
+            - amount
+            - confirmed
+          properties:
+            cardNumber:
+              type: string
+              description: Masked credit card number
+              example: "{{$randomCreditCardMask}}"
+              pattern: "^\\*{4}-\\*{4}-\\*{4}-\\d{4}$"
+            cardType:
+              type: string
+              description: Type of credit card
+              example: "{{$randomArrayItem}}"
+              enum: ["Visa", "MasterCard", "American Express", "Discover"]
+            currency:
+              type: string
+              description: Currency code (ISO 4217)
+              example: "{{$randomCurrencyCode}}"
+              pattern: "^[A-Z]{3}$"
+            amount:
+              type: integer
+              description: Total payment amount in cents
+              example: "{{$randomInt}}"
+              minimum: 1
+              maximum: 99999999
+            confirmed:
+              type: boolean
+              description: Whether payment has been confirmed
+              example: "{{$randomBoolean}}"
+            confirmedAt:
+              type: string
+              format: date-time
+              description: Payment confirmation timestamp
+              example: "{{$isoTimestamp}}"
+            paymentMethod:
+              type: string
+              description: Method of payment
+              example: "{{$randomArrayItem}}"
+              enum: ["Credit Card", "Debit Card", "PayPal", "Apple Pay", "Google Pay"]
+            transactionId:
+              type: string
+              description: Unique transaction identifier
+              example: "{{$guid}}"
+        basket:
+          type: array
+          description: Items in the shopping basket
+          minItems: 1
+          maxItems: 50
+          items:
+            type: object
+            required:
+              - id
+              - quantity
+            properties:
+              id:
+                type: string
+                format: uuid
+                description: Unique product identifier
+                example: "{{$guid}}"
+              name:
+                type: string
+                description: Product name
+                example: "{{$randomProductName}}"
+                maxLength: 200
+              quantity:
+                type: integer
+                description: Quantity of the item
+                example: "{{$randomInt}}"
+                minimum: 1
+                maximum: 999
+              unitPrice:
+                type: integer
+                description: Price per unit in cents
+                example: "{{$randomInt}}"
+                minimum: 0
+              totalPrice:
+                type: integer
+                description: Total price for this item in cents
+                example: "{{$randomInt}}"
+                minimum: 0
+              sku:
+                type: string
+                description: Stock keeping unit
+                example: "{{$randomInt}}"
+                maxLength: 50
+        shipping:
+          type: object
+          description: Shipping information
+          properties:
+            method:
+              type: string
+              description: Shipping method
+              example: "{{$randomArrayItem}}"
+              enum: ["Standard", "Express", "Overnight", "Free Shipping"]
+            cost:
+              type: integer
+              description: Shipping cost in cents
+              example: "{{$randomInt}}"
+              minimum: 0
+            estimatedDelivery:
+              type: string
+              format: date-time
+              description: Estimated delivery date
+              example: "{{$isoTimestamp}}"
+            trackingNumber:
+              type: string
+              description: Shipping tracking number
+              example: "{{$randomInt}}"
+              maxLength: 50
+        createdAt:
+          type: string
+          format: date-time
+          description: Purchase creation timestamp
+          example: "{{$isoTimestamp}}"
+        status:
+          type: string
+          description: Current order status
+          example: "{{$randomArrayItem}}"
+          enum: ["Pending", "Confirmed", "Processing", "Shipped", "Delivered", "Cancelled"]
+        totalAmount:
+          type: integer
+          description: Total order amount including shipping and taxes
+          example: "{{$randomInt}}"
+          minimum: 0
+        taxAmount:
+          type: integer
+          description: Tax amount in cents
+          example: "{{$randomInt}}"
+          minimum: 0
+    MockBlogPost:
+      type: object
+      required:
+        - author
+        - title
+        - slug
+        - summary
+        - body
+      properties:
+        author:
+          type: string
+          description: Author's username or display name
+          example: "{{$randomUserName}}"
+          minLength: 1
+          maxLength: 100
+        title:
+          type: string
+          description: Blog post title
+          example: "{{$randomLoremWords}}"
+          minLength: 5
+          maxLength: 200
+        slug:
+          type: string
+          description: URL-friendly version of the title
+          example: "{{$randomLoremSlug}}"
+          pattern: "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          maxLength: 200
+        summary:
+          type: string
+          description: Brief summary of the blog post
+          example: "{{$randomLoremSentences}}"
+          minLength: 10
+          maxLength: 500
+        body:
+          type: string
+          description: Full blog post content
+          example: "{{blogPostContent}}"
+          minLength: 50
+        publishedAt:
+          type: string
+          format: date-time
+          description: Publication timestamp
+          example: "{{$isoTimestamp}}"
+        tags:
+          type: array
+          description: Tags associated with the blog post
+          items:
+            type: string
+            minLength: 1
+            maxLength: 50
+          example: ["{{$randomLoremWord}}", "{{$randomLoremWord}}", "{{$randomLoremWord}}"]
+          maxItems: 10
+        category:
+          type: string
+          description: Blog post category
+          example: "{{$randomArrayItem}}"
+          enum: ["Technology", "Business", "Lifestyle", "Travel", "Food", "Health", "Education"]
+        readTime:
+          type: integer
+          description: Estimated reading time in minutes
+          example: "{{$randomInt}}"
+          minimum: 1
+          maximum: 60
+        featured:
+          type: boolean
+          description: Whether the post is featured
+          example: "{{$randomBoolean}}"
+        seo:
+          type: object
+          description: SEO metadata
+          properties:
+            metaTitle:
+              type: string
+              description: SEO title
+              example: "{{$randomLoremWords}}"
+              maxLength: 60
+            metaDescription:
+              type: string
+              description: SEO description
+              example: "{{$randomLoremSentences}}"
+              maxLength: 160
+            keywords:
+              type: array
+              description: SEO keywords
+              items:
+                type: string
+              example: ["{{$randomLoremWord}}", "{{$randomLoremWord}}", "{{$randomLoremWord}}"]
+              maxItems: 10
+        comments:
+          type: array
+          description: Comments on the blog post
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+                description: Comment identifier
+                example: "{{$guid}}"
+              author:
+                type: string
+                description: Comment author
+                example: "{{$randomUserName}}"
+              content:
+                type: string
+                description: Comment content
+                example: "{{$randomLoremSentences}}"
+              createdAt:
+                type: string
+                format: date-time
+                description: Comment creation timestamp
+                example: "{{$isoTimestamp}}"
+          maxItems: 100
+tags:
+  - name: Mock Data Generation
+paths:
+  /mock/users:
+    post:
+      tags:
+        - Mock Data Generation
+      summary: Create Mock User
+      description: |
+        Generates a comprehensive mock user with randomized personal information including:
+        - Personal details (name, email, phone)
+        - Address information
+        - Profile data (age, gender, occupation)
+        - Timestamps
+        
+        This endpoint is perfect for testing user management APIs and applications.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MockUser'
+            examples:
+              basicUser:
+                summary: Basic User Profile
+                description: Creates a user with essential information
+                value:
+                  firstName: "{{$randomFirstName}}"
+                  lastName: "{{$randomLastName}}"
+                  email: "{{$randomEmail}}"
+                  phone: "{{$randomPhoneNumber}}"
+                  createdAt: "{{$isoTimestamp}}"
+                  address:
+                    line1: "{{$randomStreetAddress}}"
+                    line2: "{{$randomCity}}"
+                    country: "{{$randomCountryCode}}"
+                    zipCode: "{{$randomZipCode}}"
+              completeUser:
+                summary: Complete User Profile
+                description: Creates a user with all available information
+                value:
+                  firstName: "{{$randomFirstName}}"
+                  lastName: "{{$randomLastName}}"
+                  email: "{{$randomEmail}}"
+                  phone: "{{$randomPhoneNumber}}"
+                  createdAt: "{{$isoTimestamp}}"
+                  address:
+                    line1: "{{$randomStreetAddress}}"
+                    line2: "{{$randomCity}}"
+                    country: "{{$randomCountryCode}}"
+                    zipCode: "{{$randomZipCode}}"
+                  profile:
+                    age: "{{$randomInt}}"
+                    gender: "{{$randomArrayItem}}"
+                    occupation: "{{$randomJobTitle}}"
+      responses:
+        '200':
+          description: Mock user created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MockUser'
+        '400':
+          description: Invalid request data
+        '500':
+          description: Internal server error
+
+  /mock/purchases:
+    post:
+      tags:
+        - Mock Data Generation
+      summary: Create Mock Purchase
+      description: |
+        Generates a mock purchase transaction with randomized financial data including:
+        - User identification
+        - Payment details (card, currency, amount)
+        - Shopping basket with multiple items
+        - Transaction timestamps
+        
+        This endpoint is ideal for testing e-commerce and payment processing APIs.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MockPurchase'
+            examples:
+              simplePurchase:
+                summary: Simple Purchase
+                description: Creates a basic purchase with minimal items
+                value:
+                  userId: "{{$guid}}"
+                  payment:
+                    cardNumber: "{{$randomCreditCardMask}}"
+                    currency: "{{$randomCurrencyCode}}"
+                    amount: "{{$randomInt}}"
+                    confirmed: "{{$randomBoolean}}"
+                    confirmedAt: "{{$isoTimestamp}}"
+                  basket:
+                    - id: "{{$guid}}"
+                      quantity: "{{$randomInt}}"
+              complexPurchase:
+                summary: Complex Purchase
+                description: Creates a purchase with multiple basket items
+                value:
+                  userId: "{{$guid}}"
+                  payment:
+                    cardNumber: "{{$randomCreditCardMask}}"
+                    currency: "{{$randomCurrencyCode}}"
+                    amount: "{{$randomInt}}"
+                    confirmed: "{{$randomBoolean}}"
+                    confirmedAt: "{{$isoTimestamp}}"
+                  basket:
+                    - id: "{{$guid}}"
+                      quantity: "{{$randomInt}}"
+                    - id: "{{$guid}}"
+                      quantity: "{{$randomInt}}"
+                    - id: "{{$guid}}"
+                      quantity: "{{$randomInt}}"
+      responses:
+        '200':
+          description: Mock purchase created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MockPurchase'
+        '400':
+          description: Invalid request data
+        '500':
+          description: Internal server error
+
+  /mock/blog-posts:
+    post:
+      tags:
+        - Mock Data Generation
+      summary: Create Mock Blog Post
+      description: |
+        Generates a mock blog post with randomized content including:
+        - Author information
+        - Title and slug generation
+        - Content summary and body
+        - Publication metadata
+        - Tags
+        
+        This endpoint is perfect for testing content management systems and blog APIs.
+        Note: The `blogPostContent` variable should be set via pre-request script in Postman.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MockBlogPost'
+            examples:
+              basicPost:
+                summary: Basic Blog Post
+                description: Creates a simple blog post with essential content
+                value:
+                  author: "{{$randomUserName}}"
+                  title: "{{$randomLoremWords}}"
+                  slug: "{{$randomLoremSlug}}"
+                  summary: "{{$randomLoremSentences}}"
+                  body: "{{blogPostContent}}"
+              completePost:
+                summary: Complete Blog Post
+                description: Creates a comprehensive blog post with all metadata
+                value:
+                  author: "{{$randomUserName}}"
+                  title: "{{$randomLoremWords}}"
+                  slug: "{{$randomLoremSlug}}"
+                  summary: "{{$randomLoremSentences}}"
+                  body: "{{blogPostContent}}"
+                  publishedAt: "{{$isoTimestamp}}"
+                  tags: ["{{$randomLoremWord}}", "{{$randomLoremWord}}", "{{$randomLoremWord}}"]
+      responses:
+        '200':
+          description: Mock blog post created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MockBlogPost'
+        '400':
+          description: Invalid request data
+        '500':
+          description: Internal server error
+
+  # Legacy endpoint for backward compatibility
+  /post:
+    post:
+      tags:
+        - Postman Echo API
+        - Mock Data Generation
+      summary: Echo POST Request (Legacy)
+      description: |
+        A simple POST request that echos the request details in the response.
+        This endpoint is maintained for backward compatibility.
+        For new implementations, use the specific mock data endpoints:
+        - `/mock/users` for user generation
+        - `/mock/purchases` for purchase generation  
+        - `/mock/blog-posts` for blog post generation
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                someHash:
+                  type: string
+                  example: '7654321'
+                secondHash:
+                  type: string
+                  example: '987654321asdfgh'
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  args:
+                    type: object
+                    description: Query parameters
+                  data:
+                    type: object
+                    description: Request body data
+                  files:
+                    type: object
+                    description: File uploads
+                  form:
+                    type: object
+                    description: Form data
+                  headers:
+                    type: object
+                    description: Request headers
+                  json:
+                    type: object
+                    description: JSON payload
+                  url:
+                    type: string
+                    description: Request URL 
